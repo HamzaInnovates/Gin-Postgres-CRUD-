@@ -2,10 +2,15 @@ package main
 
 import (
 	"postgres/config"
+	"postgres/initializers"
 	"postgres/router"
 
 	"github.com/gin-gonic/gin"
 )
+
+func init() {
+	initializers.LoadEnv()
+}
 
 func main() {
 	config.Connect()

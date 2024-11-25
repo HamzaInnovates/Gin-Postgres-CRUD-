@@ -12,6 +12,6 @@ func UserRoute(router *gin.Engine) {
 	router.PUT("/user/:id", controller.UpdateUserData)
 	router.DELETE("/user/:id", controller.DeleteUserData)
 	router.GET("/user/:id", controller.GetUser)
-	router.GET("/signin/", controller.AuthenticateUser)
+	router.POST("/signin", controller.AuthenticateUser)
 
 }
