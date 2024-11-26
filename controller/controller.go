@@ -12,7 +12,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GetUserData(c *gin.Context) {
+type UserController interface {
+	GetUserData(c *gin.Context)
+	AddUserData(c *gin.Context)
+	UpdateUserData(c *gin.Context)
+	DeleteUserData(c *gin.Context)
+	GetUser(c *gin.Context)
+	AuthenticateUser(c *gin.Context)
+}
+
+type userControllerimplementation struct{}
+
+func Newusercontroller() UserController {
+	return &userControllerimplementation{}
+}
+
+func (u *userControllerimplementation) GetUserData(c *gin.Context) {
 	var users []models.User
 	if err := config.DB.Find(&users).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
@@ -20,7 +35,7 @@ func GetUserData(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, users)
 }
-func AddUserData(c *gin.Context) {
+func (u *userControllerimplementation) AddUserData(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
@@ -39,7 +54,7 @@ func AddUserData(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, user)
 }
-func UpdateUserData(c *gin.Context) {
+func (u *userControllerimplementation) UpdateUserData(c *gin.Context) {
 	var user models.User
 	UserID := c.Param("id")
 	if err := config.DB.First(&user, UserID).Error; err != nil {
@@ -65,7 +80,7 @@ func UpdateUserData(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func DeleteUserData(c *gin.Context) {
+func (u *userControllerimplementation) DeleteUserData(c *gin.Context) {
 	var user models.User
 	UserID := c.Param("id")
 	if err := config.DB.First(&user, UserID).Error; err != nil {
@@ -76,7 +91,7 @@ func DeleteUserData(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
 
-func GetUser(c *gin.Context) {
+func (u *userControllerimplementation) GetUser(c *gin.Context) {
 	UserID := c.Param("id")
 
 	var user models.User
@@ -88,7 +103,7 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func AuthenticateUser(c *gin.Context) {
+func (u *userControllerimplementation) AuthenticateUser(c *gin.Context) {
 	var credentials struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`

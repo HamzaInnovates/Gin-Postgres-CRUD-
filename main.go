@@ -2,6 +2,7 @@ package main
 
 import (
 	"postgres/config"
+	"postgres/controller"
 	"postgres/initializers"
 	"postgres/router"
 
@@ -15,6 +16,7 @@ func init() {
 func main() {
 	config.Connect()
 	root := gin.New()
-	router.UserRoute(root)
+	userController := controller.Newusercontroller()
+	router.UserRoute(root, userController)
 	root.Run(":8000")
 }
